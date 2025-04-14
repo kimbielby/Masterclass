@@ -13,22 +13,38 @@ def read_convert_hue(img_path):
 
     return hls_image, hls_image_hue
 
-def create_colour_heatmap(image_hue, targ_hue=60, display=False):
-    # Define target hue
+# TODO
+def create_colour_heatmap(image_hue, targ_hue=60, display=False, save_as=None):
+    if save_as is None:
+        save_as = "outputs/colour_heatmap.png"
+
+    # Define target hue (60 is green)
     target_hue = targ_hue
 
     # Calculate distance image hue is from target hue
-    hue_distance = np.abs(image_hue.astype(np.int16) - target_hue)
+    hue_distance = cv2.absdiff(image_hue, target_hue)
     hue_distance = np.minimum(hue_distance, 180 - hue_distance)
 
+    # Apply threshold mask
+    mask = (hue_distance > 5) & (hue_distance < 15)
+
+    # Create empty image and copy only values within threshold
+    highlight = np.zeros_like(hue_distance, dtype=np.uint8)
+    highlight[mask] = hue_distance[mask]
+
     # Normalise the hue distance to [0, 255] range
-    normalised_hue_distance = cv2.normalize(hue_distance, None, 0, 255, cv2.NORM_MINMAX)
+    normalised_hue_distance = cv2.normalize(highlight, None, 0, 255, cv2.NORM_MINMAX)
+
+    # Amplify small differences
+    gama = 0.5
+    hue_distance_gama = np.power(normalised_hue_distance / 255.0, gama) * 255
+    hue_distance_gama = hue_distance_gama.astype(np.uint8)
 
     # Apply coloured heatmap: hues close to green are blue; hues further away are red
-    coloured_heatmap = cv2.applyColorMap(normalised_hue_distance.astype(np.uint8), cv2.COLORMAP_JET)
+    coloured_heatmap = cv2.applyColorMap(hue_distance_gama, cv2.COLORMAP_JET)
 
     # Save the heatmap image
-    cv2.imwrite('outputs/green_hue_heatmap.png', coloured_heatmap)
+    cv2.imwrite(save_as, coloured_heatmap)
 
     # Display the heatmap image if display == True
     if display:

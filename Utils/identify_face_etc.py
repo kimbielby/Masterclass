@@ -4,6 +4,7 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 import numpy as np
 import os
+from pathlib import Path
 
 """
 category labels = {
@@ -21,7 +22,7 @@ def segment_face_et_al(og_img_path, class_indices=None):
         class_indices = [2, 3]
 
     # Create options for segmenter
-    model_path = "../models/selfie_multiclass_256x256.tflite"
+    model_path = "./models/selfie_multiclass_256x256.tflite"
     base_options = python.BaseOptions(model_asset_path=model_path)
     options = vision.ImageSegmenterOptions(base_options=base_options,
                                            output_category_mask=True,
