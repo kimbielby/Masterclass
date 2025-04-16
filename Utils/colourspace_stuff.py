@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
+from matplotlib import patches
 import numpy as np
 import cv2
 import Utils.identify_face_etc as iden
+import colorsys
 
 def read_convert_hue(img_path):
     # Read in image
@@ -12,6 +14,9 @@ def read_convert_hue(img_path):
     hls_image_hue = hls_image[:, :, 0]
 
     return hls_image, hls_image_hue
+
+def normalise_hsl(h, s, l):
+    return h / 360.0, s / 100.0, l / 100.0
 
 def create_colour_heatmap(hsv_img, targ_hue=60, display=False, save_as=None):
     if save_as is None:
@@ -206,4 +211,66 @@ def visualise_hue_scale(save=False):
         plt.savefig('../outputs/hue_scale.png')
 
     plt.show()
+
+def display_hue_swatches(hue_num):
+    hue = hue_num
+    hue_norm = hue / 360
+
+    # Define saturation and luminosity levels
+    sat_levels = [0.3, 0.5, 0.7]
+    lum_levels = [0.3, 0.5, 0.7]
+
+    # Build colour grid
+    colours = []
+    for lum in lum_levels:
+        row = []
+        for sat in sat_levels:
+            rgb = colorsys.hls_to_rgb(hue_norm, lum, sat)
+            row.append(rgb)
+        colours.append(row)
+
+    # Display
+    fig, ax = plt.subplots(figsize=(6, 3))
+    ax.imshow(colours, extent=[0, 3, 0, 3])
+    # xticks
+    ax.set_xticks(np.arange(0.5, 3.5, 1))
+    ax.set_xticklabels([f"S= {sat}" for sat in sat_levels])
+    # yticks
+    ax.set_yticks(np.arange(0.5, 3.5, 1))
+    ax.set_yticklabels([f"L= {lum}" for lum in reversed(lum_levels)])
+    # title
+    ax.set_title(f"Hue {hue} in HSL - Variation of Saturation and Luminosity")
+    plt.show()
+
+def display_solid_hue(hue, sat, lum, save_as=None):
+    hue, sat, lum = normalise_hsl(hue, sat, lum)
+
+    # Turn hsl into rgb
+    rgb = colorsys.hls_to_rgb(hue, lum, sat)
+
+    fig, ax = plt.subplots(figsize=(3, 3))
+
+    # Draw full sized square
+    rect = patches.Rectangle((0, 0), 1, 1, facecolor=rgb)
+    ax.add_patch(rect)
+
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_aspect('equal')
+    plt.box(False)
+
+    # Save plot if filename provided
+    if save_as:
+        plt.savefig(save_as, bbox_inches='tight', pad_inches=0, dpi=300)
+
+    # Display plot
+    plt.show()
+
+
+
+
+
+
 

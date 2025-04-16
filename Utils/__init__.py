@@ -12,11 +12,15 @@ __all__ = [
     "remove_green_screen",
     "create_bin_spill_mask",
     "replace_spill",
+    "display_hue_swatches",
+    "display_solid_hue",
     # identify_face_etc
     "segment_face_et_al",
     "save_img_as",
     # calculations
     "get_dom_hue",
     "get_best_k",
+    "convert_hsl_opencv_to_standard",
+    "convert_hsl_standard_to_opencv",
 
 ]
