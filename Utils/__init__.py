@@ -1,5 +1,6 @@
 from .colourspace_stuff import *
 from .identify_face_etc import *
+from .calculations import *
 
 __all__ = [
     # colourspace_stuff
@@ -9,7 +10,13 @@ __all__ = [
     "visualise_hue_scale",
     "visualise_hue_histogram",
     "remove_green_screen",
+    "create_bin_spill_mask",
+    "replace_spill",
     # identify_face_etc
     "segment_face_et_al",
     "save_img_as",
+    # calculations
+    "get_dom_hue",
+    "get_best_k",
+
 ]

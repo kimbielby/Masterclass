@@ -13,35 +13,45 @@ def read_convert_hue(img_path):
 
     return hls_image, hls_image_hue
 
-# TODO
-def create_colour_heatmap(image_hue, targ_hue=60, display=False, save_as=None):
+def create_colour_heatmap(hsv_img, targ_hue=60, display=False, save_as=None):
     if save_as is None:
         save_as = "outputs/colour_heatmap.png"
+
+    # Get HSV values
+    hue = hsv_img[:, :, 0]
+    sat = hsv_img[:, :, 1]
+    val = hsv_img[:, :, 2]
 
     # Define target hue (60 is green)
     target_hue = targ_hue
 
+    # Make array of same shape as hue filled with target hue
+    target_hue_array = np.full_like(hue, target_hue)
+
     # Calculate distance image hue is from target hue
-    hue_distance = cv2.absdiff(image_hue, target_hue)
-    hue_distance = np.minimum(hue_distance, 180 - hue_distance)
+    hue_distance = cv2.absdiff(hue, target_hue_array)
+    hue_distance = cv2.min(hue_distance, 180 - hue_distance)
 
-    # Apply threshold mask
-    mask = (hue_distance > 5) & (hue_distance < 15)
+    # Apply threshold skin_mask
+    skin_mask = (sat > 50) & (val > 50)
 
-    # Create empty image and copy only values within threshold
+    # Create spill mask (pixels far from skin hue, likely toward green
+    spill_mask = (hue_distance > 10) & (hue_distance < 70) & skin_mask
+
+    # Create image highlighting only  spill regions
     highlight = np.zeros_like(hue_distance, dtype=np.uint8)
-    highlight[mask] = hue_distance[mask]
+    highlight[spill_mask] = hue_distance[spill_mask]
 
     # Normalise the hue distance to [0, 255] range
-    normalised_hue_distance = cv2.normalize(highlight, None, 0, 255, cv2.NORM_MINMAX)
+    highlight_norm = cv2.normalize(highlight, None, 0, 255, cv2.NORM_MINMAX)
 
     # Amplify small differences
-    gama = 0.5
-    hue_distance_gama = np.power(normalised_hue_distance / 255.0, gama) * 255
-    hue_distance_gama = hue_distance_gama.astype(np.uint8)
+    gama = 0.6
+    highlight_float = (highlight_norm / 255.0) ** gama
+    highlight_gama = (highlight_float * 255).astype(np.uint8)
 
     # Apply coloured heatmap: hues close to green are blue; hues further away are red
-    coloured_heatmap = cv2.applyColorMap(hue_distance_gama, cv2.COLORMAP_JET)
+    coloured_heatmap = cv2.applyColorMap(highlight_gama, cv2.COLORMAP_JET)
 
     # Save the heatmap image
     cv2.imwrite(save_as, coloured_heatmap)
@@ -50,33 +60,71 @@ def create_colour_heatmap(image_hue, targ_hue=60, display=False, save_as=None):
     if display:
         plt.imshow(coloured_heatmap)
 
-def generate_hue_gradient():
-    # Create 180 x 50 image to represent the different hues
-    hue_scale = np.zeros((50, 180, 3), dtype=np.uint8)
+def create_bin_spill_mask(hsv_img, targ_hue=13, display=False, save_as=None):
+    if save_as is None:
+        save_as = "outputs/bin_spill_mask.png"
 
-    # Update each point on x-axis with a different hue
-    for i in range(180):
-        hue_scale[:, i] = [i, 255, 255]  # Hue, Max Saturation, Max Luminosity
+    # Get HSV values
+    hue, sat, val = cv2.split(hsv_img)
 
-    # Convert from HLS to RGB for display
-    hue_scale_rgb = cv2.cvtColor(hue_scale, cv2.COLOR_HSV2RGB)
+    # Target hue for skin tone
+    target_hue = targ_hue
+    target_hue_array = np.full_like(hue, target_hue)
 
-    return hue_scale_rgb
+    # Absolute hue distance, circular
+    diff = cv2.absdiff(hue, target_hue_array)
+    hue_diff = cv2.min(diff, 180 - diff)
 
-def visualise_hue_scale(save=False):
-    # Get hue gradient
-    hue_scale_rgb = generate_hue_gradient()
+    # Mask for likely skin tones
+    skin_mask = (sat > 50) & (val > 50)
 
-    # Display Hues
-    plt.imshow(hue_scale_rgb)
-    plt.xticks([0, 30, 60, 90, 120, 150, 180], ['Red', 'Yellow', 'Green', 'Cyan', 'Blue', 'Magenta', 'Red'])
-    plt.yticks([])
-    plt.title('Hue Bin to Colour Mapping')
+    # Detect green spill regions
+    spill_mask = (hue_diff > 30) & (hue_diff < 70) & skin_mask
 
-    if save:
-        plt.savefig('../outputs/hue_scale.png')
+    # Convert boolean mask to binary image (uint8)
+    binary_mask = np.zeros_like(hue, dtype=np.uint8)
+    binary_mask[spill_mask] = 255   # white for spill
 
-    plt.show()
+    # Save mask
+    cv2.imwrite(save_as, binary_mask)
+
+    # Display mask
+    if display:
+        plt.imshow(binary_mask)
+
+def replace_spill(hsv_img, targ_hue=13, display=False, save_as=None):
+    if save_as is None:
+        save_as = "outputs/despilled_image.png"
+
+    # Create spill mask like above
+    hue, sat, val = cv2.split(hsv_img)
+    target_hue = targ_hue
+    target_hue_array = np.full_like(hue, target_hue)
+    diff = cv2.absdiff(hue, target_hue_array)
+    hue_diff = cv2.min(diff, 180 - diff)
+    skin_mask = (sat > 50) & (val > 50)
+    spill_mask = (hue_diff > 30) & (hue_diff < 70) & skin_mask
+
+    # Replace hue in spill areas
+    corrected_hue = hue.copy()
+    corrected_hue[spill_mask] = target_hue  # Assign new hue only where spill detected
+
+    # Reduce saturation a bit to tone down green contamination
+    # corrected_sat = sat.copy()
+    # corrected_sat[spill_mask] = (corrected_sat[spill_mask] * 0.8).astype(np.uint8)
+
+    # Merge corrected HSV and convert back to BGR
+    corrected_hsv = cv2.merge([corrected_hue, sat, val])
+    corrected_image = cv2.cvtColor(corrected_hsv, cv2.COLOR_HSV2BGR)
+
+    # Save despilled image
+    cv2.imwrite(save_as, corrected_image)
+
+    # Display despilled image
+    if display:
+        plt.imshow(corrected_image)
+
+    return corrected_image
 
 def visualise_hue_histogram(image_hue, save=False):
     # Calculate histogram of image hue
@@ -129,8 +177,33 @@ def remove_green_screen(og_img_path, save=False, display=False):
 
     return result_rgba
 
+### ABSTRACT HUE STUFF ###
 
+def generate_hue_gradient():
+    # Create 180 x 50 image to represent the different hues
+    hue_scale = np.zeros((50, 180, 3), dtype=np.uint8)
 
+    # Update each point on x-axis with a different hue
+    for i in range(180):
+        hue_scale[:, i] = [i, 255, 255]  # Hue, Max Saturation, Max Luminosity
 
+    # Convert from HLS to RGB for display
+    hue_scale_rgb = cv2.cvtColor(hue_scale, cv2.COLOR_HSV2RGB)
 
+    return hue_scale_rgb
+
+def visualise_hue_scale(save=False):
+    # Get hue gradient
+    hue_scale_rgb = generate_hue_gradient()
+
+    # Display Hues
+    plt.imshow(hue_scale_rgb)
+    plt.xticks([0, 30, 60, 90, 120, 150, 180], ['Red', 'Yellow', 'Green', 'Cyan', 'Blue', 'Magenta', 'Red'])
+    plt.yticks([])
+    plt.title('Hue Bin to Colour Mapping')
+
+    if save:
+        plt.savefig('../outputs/hue_scale.png')
+
+    plt.show()
 
