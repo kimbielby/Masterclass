@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib import patches
 import numpy as np
 import cv2
-import Utils.identify_face_etc as iden
+import preprocessing.identify_face_etc as iden
 import colorsys
 
 def read_convert_hue(img_path):

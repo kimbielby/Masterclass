@@ -1,7 +1,5 @@
-from Utils import *
 import numpy as np
 import matplotlib.pyplot as plt
-import cv2
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
@@ -63,7 +61,6 @@ def bin_kmeans_values(hue_centres, label_counts):
     plt.ylabel("Weighted Pixel Count")
     plt.grid(True)
     plt.show()
-
 
 def convert_hsl_opencv_to_standard(hue_cv2, sat_cv2, lum_cv2):
     hue_standard = hue_cv2 * 2
