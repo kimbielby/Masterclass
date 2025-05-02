@@ -3,6 +3,7 @@ from matplotlib import patches
 import numpy as np
 import cv2
 import preprocessing.identify_face_etc as iden
+from Utils import *
 import colorsys
 
 def read_convert_hue(img_path):
@@ -20,7 +21,7 @@ def normalise_hsl(h, s, l):
 
 def create_colour_heatmap(hsv_img, targ_hue=60, display=False, save_as=None):
     if save_as is None:
-        save_as = "outputs/colour_heatmap.png"
+        save_as = "./outputs/colour_heatmap.png"
 
     # Get HSV values
     hue = hsv_img[:, :, 0]
@@ -63,7 +64,12 @@ def create_colour_heatmap(hsv_img, targ_hue=60, display=False, save_as=None):
 
     # Display the heatmap image if display == True
     if display:
-        plt.imshow(coloured_heatmap)
+        plt.figure(figsize=(8, 6))
+        plt.imshow(coloured_heatmap, cmap='hot')
+        plt.title('Green Spill Heatmap')
+        plt.axis('off')
+        plt.colorbar(label='Spill Intensity')
+        plt.show()
 
 def create_bin_spill_mask(hsv_img, targ_hue=13, display=False, save_as=None):
     if save_as is None:
@@ -97,7 +103,7 @@ def create_bin_spill_mask(hsv_img, targ_hue=13, display=False, save_as=None):
     if display:
         plt.imshow(binary_mask)
 
-def replace_spill(hsv_img, targ_hue=13, display=False, save_as=None):
+def replace_spill(hsv_img, targ_hue=6, display=False, save_as=None):
     if save_as is None:
         save_as = "outputs/despilled_image.png"
 
@@ -108,7 +114,7 @@ def replace_spill(hsv_img, targ_hue=13, display=False, save_as=None):
     diff = cv2.absdiff(hue, target_hue_array)
     hue_diff = cv2.min(diff, 180 - diff)
     skin_mask = (sat > 50) & (val > 50)
-    spill_mask = (hue_diff > 30) & (hue_diff < 70) & skin_mask
+    spill_mask = (hue_diff > 20) & (hue_diff < 70) & skin_mask
 
     # Replace hue in spill areas
     corrected_hue = hue.copy()
@@ -152,7 +158,9 @@ def visualise_hue_histogram(image_hue, save=False):
 
     plt.show()
 
-def remove_green_screen(og_img_path, save=False, display=False):
+def remove_green_screen(og_img_path, save=False, save_as=None, display=False):
+    if save_as is None:
+        save_as = "./outputs/img_sans_greenscreen.png"
     # Load image
     og_img = cv2.imread(og_img_path)
     hls_img = cv2.cvtColor(og_img, cv2.COLOR_BGR2HLS)
@@ -175,7 +183,7 @@ def remove_green_screen(og_img_path, save=False, display=False):
     result_rgba[green_mask == 255] = [0, 0, 0, 0]       # Set green areas to transparent
 
     if save:
-        iden.save_img_as(fname='../outputs/img_sans_greenscreen.png', img=result_rgba)
+        save_img_as(fname=save_as, img=result_rgba)
 
     if display:
         plt.imshow(result_rgba)

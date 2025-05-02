@@ -16,12 +16,12 @@ category labels = {
 }
 """
 
-def segment_face_et_al(og_img_path, class_indices=None):
+def segment_face_et_al(og_img_path, model_path, class_indices=None):
     if class_indices is None:
         class_indices = [2, 3]
 
     # Create options for segmenter
-    model_path = "../preprocessing/models/selfie_multiclass_256x256.tflite"
+    model_path = model_path
     base_options = python.BaseOptions(model_asset_path=model_path)
     options = vision.ImageSegmenterOptions(base_options=base_options,
                                            output_category_mask=True,
