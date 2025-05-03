@@ -11,3 +11,9 @@
 #           4. Create a binary mask/matt for green spill (green spill/not green spill)
 #                   then ask to correct what is marked as binary green spill
 
+# todo: Create heatmap for green;
+#           Remove green;
+#           From that create rgba with the green spill turning into the 'a';
+#           Create another heatmap from it to see if it has remove all green
+
+
