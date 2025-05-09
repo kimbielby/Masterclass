@@ -1,19 +1,12 @@
-# TODO:
-#           1. Move into a different colourspace: Change axes from RGB to HSL
-#                   (Hue, Saturation, Luminance). Could use Lab colourspace?
-#  .
-#           2. Find the target skin tone: The skin tone is the Hue. Do a histogram
-#                   binning the average of the skin tone?
-#  .
-#           3. Create a diff image: This shows how different each pixel is from the
-#                   target skin tone. The green spill will have a much bigger difference
-#  .
-#           4. Create a binary mask/matt for green spill (green spill/not green spill)
-#                   then ask to correct what is marked as binary green spill
+# TODO: Segment person
+#           Simulate green spill
+#           - add a green halo around edges
+#           - tint the skin, hair and clothes near the edges slightly green:
+#               expand the mask of the person by a few pixels and blend green into these regions
+#               add green to the shadows/reflections
 
-# todo: Create heatmap for green;
-#           Remove green;
-#           From that create rgba with the green spill turning into the 'a';
-#           Create another heatmap from it to see if it has remove all green
+# todo: OpenCV or PIL for basic blending
+#         Use shader-like effects for more realism
+#
 
 
