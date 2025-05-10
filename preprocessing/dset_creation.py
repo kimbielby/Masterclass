@@ -2,6 +2,8 @@ import cv2
 import os
 import numpy as np
 
+results = []
+
 def is_greyscale_hsv(img_path, saturation_threshold=10):
     image = cv2.imread(img_path)
     if image is None:
@@ -35,7 +37,6 @@ def is_sepia_lab(img_path, b_threshold=20, a_threshold=10):
 
     return is_sepia
 
-results = []
 def is_mostly_greyscale(img_path, pixel_ratio_threshold=0.95, pixel_saturation_threshold=20):
     image = cv2.imread(img_path)
     if image is None:
@@ -61,7 +62,11 @@ def is_mostly_greyscale(img_path, pixel_ratio_threshold=0.95, pixel_saturation_t
     print(f"{img_path} - {ratio*100:.1f}% low-saturation pixels -> Mostly Greyscale: {is_mostly_grey}")
     return is_mostly_grey
 
-def get_results_list():
-    return results
-
+def remove_greyscale_images(img_dir_path):
+    for filename in os.listdir(img_dir_path):
+        filepath = os.path.join(img_dir_path, filename)
+        result = is_mostly_greyscale(filepath)
+        if result:
+            print(f"Removing mostly greyscale image: {filepath}")
+            os.remove(filepath)
 

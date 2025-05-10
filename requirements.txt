@@ -2,3 +2,6 @@ numpy
 matplotlib
 opencv
 mediapipe
+pandas
+python==3.10
+
