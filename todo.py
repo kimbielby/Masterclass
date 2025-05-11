@@ -10,10 +10,11 @@
 #
 
 # TODO:
-#       1. Read in all images, shuffle then split into train-val-test and save in those dirs
-#       2. Go through individually to remove remaining non-viable images - DONE!
-#       3. Segment people - not just faces - and simulate green spill
+#       1. Go through individually to remove remaining non-viable images - DONE!
+#       2. Move all images into gt folder and remove empty folders - DONE!
+#       3. Write code to read in all images, shuffle then split into train-val-test - DONE!
+#       4. Segment people - not just faces - and simulate green spill
 #           - try on just a few images first
-#       4. These will be saved in separate folder
+#       5. These will be saved in separate folder
 #
 #

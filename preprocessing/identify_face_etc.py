@@ -17,8 +17,6 @@ category labels = {
 """
 
 def segment_face_et_al(og_img_path, model_path, class_indices=None):
-    if class_indices is None:
-        class_indices = [2, 3]
 
     # Create options for segmenter
     model_path = model_path
@@ -50,14 +48,15 @@ def segment_face_et_al(og_img_path, model_path, class_indices=None):
         category_mask_resized = cv2.resize(src=category_mask,
                                            dsize=(w, h),
                                            interpolation=cv2.INTER_NEAREST)
-        # Choose which classes to keep
-        mask = np.isin(category_mask_resized, class_indices)
+
+        if class_indices is not None:
+            # Choose which classes to keep
+            category_mask_resized = np.isin(category_mask_resized, class_indices)
 
         # Apply mask to og image
-        mask_3ch = np.stack([mask]*3, axis=-1)
+        mask_3ch = np.stack([category_mask_resized]*3, axis=-1)
         output_image = np.where(mask_3ch, og_image, 0)
 
-    return output_image
-
+    return output_image, category_mask_resized
 
 
