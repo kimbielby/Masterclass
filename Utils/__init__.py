@@ -1,6 +1,8 @@
 from .generic import *
 from .parquet import *
 from .reading_in import *
+from .metrics import *
+from .plots import *
 
 __all__ = [
     # generic
@@ -16,5 +18,10 @@ __all__ = [
     "read_in_all_images",
     "get_filepaths",
     "read_in_images_simple",
+    #  metrics
+    "get_batch_accuracy",
+    "get_loss_function",
+    "get_optimiser",
+    # plots
 
 ]
