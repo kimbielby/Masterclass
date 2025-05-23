@@ -3,7 +3,7 @@ from Utils import *
 train_accuracy = []
 train_loss = []
 
-def train(model, train_loader, num_samples_batch, device, lr = 1e-4):
+def train(model, train_loader, num_samples_batch, device, lr=1e-4):
     accuracy = 0.0
     loss = 0.0
 
