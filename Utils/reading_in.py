@@ -25,11 +25,11 @@ def read_in_all_images(top_dir):
 
     return list_of_images
 
-def read_in_images_simple(folder):
+def read_in_images_simple(directory):
     list_of_images = []
-    image_files = get_filepaths(folder)
+    image_files = get_filepaths(directory)
     for img in image_files:
-        img_path = os.path.join(folder, img)
+        img_path = os.path.join(directory, img)
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         if img is not None:
