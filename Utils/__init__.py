@@ -26,5 +26,6 @@ __all__ = [
     "show_mask",
     "show_points",
     "show_box",
+    "show_anns",
 
 ]
