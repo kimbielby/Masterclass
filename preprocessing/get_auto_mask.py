@@ -6,7 +6,7 @@ import torch
 from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 import os
 
-def get_walking_mask(top_dir, checkpoint, model_type):
+def get_auto_mask(top_dir, checkpoint, model_type):
     # Get full filepaths for each png frame in top_dir
     list_of_img_paths = get_full_filepaths(top_dir)
 
@@ -14,7 +14,7 @@ def get_walking_mask(top_dir, checkpoint, model_type):
     sam_checkpoint = checkpoint
     model_type = model_type
     sam = sam_model_registry[model_type](checkpoint=sam_checkpoint)
-    sam.to("cuda" if torch.cuda.is_available() else "cpu")
+    #sam.to("cuda" if torch.cuda.is_available() else "cpu")
     mask_generator = SamAutomaticMaskGenerator(sam)
 
     for img_path in list_of_img_paths:
@@ -56,9 +56,6 @@ def get_walking_mask(top_dir, checkpoint, model_type):
         else:
             print(f"Not enough masks generated for {img_path}")
 
-
-
-    return ""
 
 def get_full_filepaths(top_dir):
     list_of_img_paths = get_filepaths(top_dir)
