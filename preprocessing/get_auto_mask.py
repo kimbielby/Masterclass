@@ -1,4 +1,4 @@
-from Utils import get_filepaths, visuals
+from Utils import get_filepaths
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
@@ -49,10 +49,10 @@ def get_auto_mask(top_dir, checkpoint, model_type):
                 # Save mask
                 cv2.imwrite((os.path.join(base_folder, folder, base_name)), mask)
 
-                # Save cutout
-                rgba = cv2.cvtColor(img, cv2.COLOR_RGB2RGBA)
-                rgba[:,:,3] = mask
-                cv2.imwrite(os.path.join(base_folder, folder, cutout_name), rgba)
+                # Save cutout - Uncomment if needed
+                # rgba = cv2.cvtColor(img, cv2.COLOR_RGB2RGBA)
+                # rgba[:,:,3] = mask
+                # cv2.imwrite(os.path.join(base_folder, folder, cutout_name), rgba)
         else:
             print(f"Not enough masks generated for {img_path}")
 
