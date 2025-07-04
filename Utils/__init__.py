@@ -9,6 +9,7 @@ __all__ = [
     "get_unique_filename",
     "move_files",
     "rename_files_in_folder",
+    "rename_frames",
     # reading_in
     "read_in_all_images",
     "get_filepaths",

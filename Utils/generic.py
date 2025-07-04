@@ -63,4 +63,21 @@ def rename_files_in_folder(folder, new_name_s, new_name_e):
         new_path = os.path.join(folder, new_name)
         os.rename(old_path, new_path)
 
+def rename_frames(folder, new_fname):
+    """
+
+    :param folder: The gt or spill folder where the frames to be renamed live
+    :param new_fname: The new base filename, e.g. gt_kim_walking2
+    """
+    for filename in os.listdir(folder):
+        # Get the number part of the og filename
+        img_num = filename.split('.')[1]
+        # Use it in the new filename
+        new_filename = f"{new_fname}_{img_num}.png"
+        # Specify og path and new path
+        og_path = os.path.join(folder, filename)
+        new_path = os.path.join(folder, new_filename)
+        # Rename the file
+        os.rename(og_path, new_path)
+        print(f"Renamed {filename} to {new_filename}")
 

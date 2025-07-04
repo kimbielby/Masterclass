@@ -14,14 +14,15 @@ def read_in_all_images(top_dir):
     # For each filepath to the sub-folder get filepaths to all images inside it
     for i in range(len(filepaths)):
         temp_fp = get_filepaths(dir_name=filepaths[i])
-        for j in range(len(temp_fp)):
-            # Get filepath to image in subfolder
-            temp_fp[j] = os.path.join(filepaths[i], temp_fp[j])
-            # Load image
-            img = cv2.imread(temp_fp[j])
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            # Append to List
-            list_of_images.append(img)
+        if len(temp_fp) > 0:
+            for j in range(len(temp_fp)):
+                # Get filepath to image in subfolder
+                temp_fp[j] = os.path.join(filepaths[i], temp_fp[j])
+                # Load image - keep as bgr
+                img = cv2.imread(temp_fp[j])
+                # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                # Append to List
+                list_of_images.append(img)
 
     return list_of_images
 
@@ -30,8 +31,8 @@ def read_in_images_simple(directory):
     image_files = get_filepaths(directory)
     for img in image_files:
         img_path = os.path.join(directory, img)
-        img = cv2.imread(img_path)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = cv2.imread(img_path)  # keep as bgr
+        # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         if img is not None:
             list_of_images.append(img)
 

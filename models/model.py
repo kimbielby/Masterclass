@@ -16,7 +16,7 @@ class DoubleConv(nn.Module):
         return self.double_conv(x)
 
 class UNet(nn.Module):
-    def __init__(self, in_channels=5, out_channels=3):
+    def __init__(self, in_channels, out_channels):
         super().__init__()
 
         self.encoder1 = DoubleConv(in_channels, 64)
@@ -67,8 +67,8 @@ class UNet(nn.Module):
 
         return self.final_conv(decoder1)
 
-def get_model(device):
-    model = UNet(in_channels=5, out_channels=3)
+def get_model(device, in_channels, out_channels):
+    model = UNet(in_channels=in_channels, out_channels=out_channels) # 5, 3
 
     return model.to(device)
 

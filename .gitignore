@@ -1,4 +1,4 @@
 /.idea/
-/preprocessing/segmentation_models/SAM/sam_vit_h_4b8939.pth
+/dataset_creation/segmentation_models/SAM/sam_vit_h_4b8939.pth
 /data/images/
-/preprocessing/segmentation_models/MediaPipe/deeplab_v3.tflite
+/dataset_creation/segmentation_models/MediaPipe/deeplab_v3.tflite
