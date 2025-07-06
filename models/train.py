@@ -1,11 +1,13 @@
 from Utils import *
 
-train_accuracy = []
+train_psnr = []
+train_ssim = []
 train_loss = []
 
 def train(model, train_loader, num_samples_batch, device, lr=1e-4):
-    accuracy = 0.0
     loss = 0.0
+    psnr = 0.0
+    ssim = 0.0
 
     model.train()
     for inputs, gt in train_loader:
@@ -24,15 +26,22 @@ def train(model, train_loader, num_samples_batch, device, lr=1e-4):
         optimiser.step()
 
         loss += batch_loss.item()
-        accuracy += get_batch_accuracy(output=output, target=gt, N=num_samples_batch)
+        psnr += get_batch_psnr(model_output=output, gt=gt)
+        ssim += get_batch_ssim(model_output=output, gt=gt, device=device)
 
-    train_accuracy.append(accuracy)
+    psnr /= num_samples_batch
+    ssim /= num_samples_batch
+    train_psnr.append(psnr)
+    train_ssim.append(ssim)
     train_loss.append(loss)
-    print(f"Train Loss: {loss:.3f}, Train Accuracy: {accuracy * 100:.3f}")
+    print(f"Train Loss: {loss:.3f}, Train PSNR: {psnr:.3f}, Train SSIM: {ssim:.3f}")
 
 """ Getters for Lists """
-def get_train_accuracy_list():
-    return train_accuracy
+def get_train_psnr_list():
+    return train_psnr
+
+def get_train_ssim_list():
+    return train_ssim
 
 def get_train_loss_list():
     return train_loss
