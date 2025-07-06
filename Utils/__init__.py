@@ -18,6 +18,8 @@ __all__ = [
     "get_batch_accuracy",
     "get_loss_function",
     "get_optimiser",
+    "get_batch_psnr",
+    "get_batch_ssim",
     # visuals
     "show_mask",
     "show_points",

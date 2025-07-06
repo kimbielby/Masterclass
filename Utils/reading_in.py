@@ -32,13 +32,15 @@ def read_in_all_images(top_dir):
 def read_in_images_simple(directory):
     list_of_images = []
     image_files = get_filepaths(directory)
+    image_files.sort(key=str.lower)
     for img in image_files:
         img_path = os.path.join(directory, img)
         print(f"Reading in {img}")
-        img = cv2.imread(img_path)  # keep as bgr
+        image = cv2.imread(img_path)  # keep as bgr
         # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        if img is not None:
-            list_of_images.append(img)
+        # Resize
+        image_rs = cv2.resize(image, (256, 256))
+        list_of_images.append(image_rs)
 
     return list_of_images
 
