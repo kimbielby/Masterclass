@@ -2,7 +2,7 @@ numpy
 matplotlib
 opencv
 pandas
-python==3.10.16
+python==3.11.13
 torch
 segment_anything
 scikit-learn
