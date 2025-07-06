@@ -1,10 +1,5 @@
 from Utils import get_filepaths
-import matplotlib.pyplot as plt
-import numpy as np
-import cv2
-import torch
-from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
-import os
+from imports import *
 
 def get_auto_mask(top_dir, checkpoint, model_type):
     # Get full filepaths for each png frame in top_dir

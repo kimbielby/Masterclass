@@ -11,9 +11,12 @@ def read_in_all_images(top_dir):
     for i in range(len(filepaths)):
         filepaths[i] = os.path.join(top_dir, filepaths[i])
 
+    filepaths.sort(key=str.lower)
+
     # For each filepath to the sub-folder get filepaths to all images inside it
     for i in range(len(filepaths)):
         temp_fp = get_filepaths(dir_name=filepaths[i])
+        print(f"Looking in directory {filepaths[i]}")
         if len(temp_fp) > 0:
             for j in range(len(temp_fp)):
                 # Get filepath to image in subfolder
