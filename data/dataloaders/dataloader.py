@@ -27,6 +27,6 @@ class GreenSpillDataset(Dataset):
 def get_dataloader(spill_images, gt_images, batch_size, num_workers=2):
     dataset = GreenSpillDataset(spill_images=spill_images, gt_images=gt_images, transform_fn=add_channels)
     dataloader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
-    num_samples_in_batch = len(dataloader.dataset)
-    return dataloader, num_samples_in_batch
+    num_batches = len(dataloader)
+    return dataloader, num_batches
 
