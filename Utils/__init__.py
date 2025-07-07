@@ -2,6 +2,7 @@ from .generic import *
 from .reading_in import *
 from .metrics import *
 from .visuals import *
+from .pytorch_utils import *
 
 __all__ = [
     # generic
@@ -25,5 +26,8 @@ __all__ = [
     "show_points",
     "show_box",
     "show_anns",
+    # pytorch_utils
+    "clear_gpu_cache",
+    "check_gpu_memory",
 
 ]
