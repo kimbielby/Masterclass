@@ -34,7 +34,7 @@ def train(model, train_loader, num_samples_batch, device, lr=1e-4):
     train_psnr.append(psnr)
     train_ssim.append(ssim)
     train_loss.append(loss)
-    print(f"Train Loss: {loss:.3f}, Train PSNR: {psnr:.3f}, Train SSIM: {ssim:.3f}")
+    print(f"Train Loss: {loss:.3f}      Train PSNR: {psnr:.3f}         Train SSIM: {ssim:.3f}")
 
 """ Getters for Lists """
 def get_train_psnr_list():
