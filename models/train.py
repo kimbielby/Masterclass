@@ -1,40 +1,50 @@
 from Utils import *
+import torch
 
+train_loss = []
 train_psnr = []
 train_ssim = []
-train_loss = []
 
-def train(model, train_loader, num_samples_batch, device, lr=1e-4):
-    loss = 0.0
-    psnr = 0.0
-    ssim = 0.0
+def train(model, train_loader, device, lr=1e-4):
+    total_loss = 0.0
+    total_psnr = 0.0
+    total_ssim = 0.0
 
     model.train()
+    loss_function = get_loss_function()
+    optimiser = get_optimiser()(model.parameters(), lr=lr)
+
+    num_batches = len(train_loader)
+
     for inputs, gt in train_loader:
         inputs, gt = inputs.to(device), gt.to(device)
 
-        output = model(inputs)
-
-        optimiser = get_optimiser()
-        optimiser = optimiser(model.parameters(), lr=lr)
         optimiser.zero_grad()
 
-        loss_function = get_loss_function()
+        output = model(inputs)
         batch_loss = loss_function(output, gt)
         batch_loss.backward()
-
         optimiser.step()
 
-        loss += batch_loss.item()
-        psnr += get_batch_psnr(model_output=output, gt=gt)
-        ssim += get_batch_ssim(model_output=output, gt=gt, device=device)
+        total_loss += batch_loss.item()
+        with torch.no_grad():
+            total_psnr += get_batch_psnr(model_output=output, gt=gt)
+            total_ssim += get_batch_ssim(model_output=output, gt=gt, device=device)
 
-    psnr /= num_samples_batch
-    ssim /= num_samples_batch
-    train_psnr.append(psnr)
-    train_ssim.append(ssim)
-    train_loss.append(loss)
-    print(f"Train Loss: {loss:.3f}      Train PSNR: {psnr:.3f}         Train SSIM: {ssim:.3f}")
+    average_loss = total_loss / num_batches
+    average_psnr = total_psnr / num_batches
+    average_ssim = total_ssim / num_batches
+
+    train_loss.append(average_loss)
+    train_psnr.append(average_psnr)
+    train_ssim.append(average_ssim)
+
+    print(f"Train Loss: {average_loss:.3f}      Train PSNR: {average_psnr:.3f}         Train SSIM: {average_ssim:.3f}")
+
+    # Check GPU memory after each epoch
+    print(f"Allocated: {torch.cuda.memory_allocated() / 1024 ** 2:.2f} MB")
+    print(f"Reserved:  {torch.cuda.memory_reserved() / 1024 ** 2:.2f} MB")
+
 
 """ Getters for Lists """
 def get_train_psnr_list():

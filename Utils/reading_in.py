@@ -33,9 +33,9 @@ def read_in_images_simple(directory):
     list_of_images = []
     image_files = get_filepaths(directory)
     image_files.sort(key=str.lower)
-    for i in range(500):
-        img_path = os.path.join(directory, image_files[i])
-        print(f"Reading in {image_files[i]}")
+    for img in image_files:
+        img_path = os.path.join(directory, img)
+        print(f"Reading in {img}")
         image = cv2.imread(img_path)  # keep as bgr
         # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         # Resize

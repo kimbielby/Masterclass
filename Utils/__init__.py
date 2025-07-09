@@ -22,6 +22,7 @@ __all__ = [
     "get_batch_psnr",
     "get_batch_ssim",
     # visuals
+    "plot_results",
     "show_mask",
     "show_points",
     "show_box",

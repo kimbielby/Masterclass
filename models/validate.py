@@ -1,32 +1,39 @@
 from imports import *
 from Utils import *
 
+valid_loss = []
 valid_psnr = []
 valid_ssim = []
-valid_loss = []
 
-def validate(model, valid_loader, num_val_batches, device):
-    loss = 0
-    psnr = 0
-    ssim = 0
+def validate(model, valid_loader, device):
+    total_loss = 0.0
+    total_psnr = 0.0
+    total_ssim = 0.0
 
     model.eval()
+    loss_function = get_loss_function()
+
+    num_batches = len(valid_loader)
+
     with torch.no_grad():
         for inputs, gt in valid_loader:
             inputs, gt = inputs.to(device), gt.to(device)
             output = model(inputs)
-            loss_function = get_loss_function()
-            loss += loss_function(output, gt).item()
-            psnr += get_batch_psnr(model_output=output, gt=gt)
-            ssim += get_batch_ssim(model_output=output, gt=gt, device=device)
 
-        psnr /= num_val_batches
-        ssim /= num_val_batches
-        valid_psnr.append(psnr)
-        valid_ssim.append(ssim)
-        valid_loss.append(loss)
+            total_loss += loss_function(output, gt).item()
+            total_psnr += get_batch_psnr(model_output=output, gt=gt)
+            total_ssim += get_batch_ssim(model_output=output, gt=gt, device=device)
 
-        print(f"Valid Loss: {loss:.3f}      Valid PSNR: {psnr:.3f}      Valid SSIM: {ssim:.3f}")
+    average_loss = total_loss / num_batches
+    average_psnr = total_psnr / num_batches
+    average_ssim = total_ssim / num_batches
+
+    valid_loss.append(average_loss)
+    valid_psnr.append(average_psnr)
+    valid_ssim.append(average_ssim)
+
+
+    print(f"Valid Loss: {average_loss:.3f}      Valid PSNR: {average_psnr:.3f}      Valid SSIM: {average_ssim:.3f}")
 
 """ Getters for Lists """
 def get_val_psnr_list():

@@ -1,5 +1,37 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from models import train, validate, test
+
+def plot_results():
+    # Get metrics
+    train_psnr_list = train.get_train_psnr_list()
+    train_ssim_list = train.get_train_ssim_list()
+
+    valid_psnr_list = validate.get_val_psnr_list()
+    valid_ssim_list = validate.get_val_ssim_list()
+
+    # Turn SSIM tensor into a matplotlib compatible tensor
+    train_ssim_list_d = [ss.detach().numpy() for ss in train_ssim_list]
+    valid_ssim_list_d = [ss.detach().numpy() for ss in valid_ssim_list]
+
+    # PSNR
+    plt.figure(figsize=(5,2))
+    plt.plot(train_psnr_list, label='Train')
+    plt.plot(valid_psnr_list, label='Valid')
+    plt.xlabel('Epoch')
+    plt.title('PSNR')
+    plt.legend()
+    plt.show()
+    # SSIM
+    plt.figure(figsize=(5,2))
+    plt.plot(train_ssim_list_d, label='Train')
+    plt.plot(valid_ssim_list, label='Valid')
+    plt.xlabel('Epoch')
+    plt.title('SSIM')
+    plt.legend()
+    plt.show()
+
+
 
 """ Preprocessing """
 

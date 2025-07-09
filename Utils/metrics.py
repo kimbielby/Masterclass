@@ -8,14 +8,14 @@ def get_batch_accuracy(output, target, N):
     correct = pred.eq(target.view_as(pred)).sum().item()
     return correct / N
 
-def get_batch_psnr(model_output, gt):
-    metric = PeakSignalNoiseRatio()
+def get_batch_psnr(model_output, gt, data_range=1.0):
+    metric = PeakSignalNoiseRatio(data_range=data_range)
     metric.update(input=model_output, target=gt)
-    return metric.compute()
+    return metric.compute().item()
 
 def get_batch_ssim(model_output, gt, device):
     metric = StructuralSimilarityIndexMeasure(data_range=1.0).to(device)
-    return metric(preds=model_output, target=gt)
+    return metric(preds=model_output, target=gt).item()
 
 def get_ave_residual_spill():
 

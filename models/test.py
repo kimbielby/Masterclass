@@ -1,30 +1,40 @@
 from imports import *
 from Utils import *
 
+test_loss = []
 test_psnr = []
 test_ssim = []
-test_loss = []
 
 def test(test_loader, model, device):
+    total_loss = 0.0
+    total_psnr = 0.0
+    total_ssim = 0.0
+
     model.load_state_dict(torch.load("spill_model.pth", weights_only=True))
+    model.to(device)
     model.eval()
+
+    loss_function = get_loss_function()
+    num_batches = len(test_loader)
+
     with torch.no_grad():
-        psnr = 0
-        ssim = 0
-        loss = 0
         for inputs, gt in test_loader:
             inputs, gt = inputs.to(device), gt.to(device)
             output = model(inputs)
-            loss_function = get_loss_function()
-            loss += loss_function(output, gt).item()
-            psnr += get_batch_psnr(output, gt)
-            ssim += get_batch_ssim(output, gt, device=device)
 
-        test_psnr.append(psnr)
-        test_ssim.append(ssim)
-        test_loss.append(loss)
+            total_loss += loss_function(output, gt).item()
+            total_psnr += get_batch_psnr(output, gt)
+            total_ssim += get_batch_ssim(output, gt, device=device)
 
-        print(f"Test Loss: {loss:.3f}       Test PSNR: {psnr:.3f}       Test SSIM: {ssim:.3f}")
+    average_loss = total_loss / num_batches
+    average_psnr = total_psnr / num_batches
+    average_ssim = total_ssim / num_batches
+
+    test_loss.append(average_loss)
+    test_psnr.append(average_psnr)
+    test_ssim.append(average_ssim)
+
+    print(f"Test Loss: {average_loss:.3f}       Test PSNR: {average_psnr:.3f}       Test SSIM: {average_ssim:.3f}")
 
 """ Getters for Lists """
 def get_test_psnr_list():
