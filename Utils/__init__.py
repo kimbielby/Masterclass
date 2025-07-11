@@ -15,6 +15,8 @@ __all__ = [
     "read_in_all_images",
     "get_filepaths",
     "read_in_images_simple",
+    "get_simple_search_filepaths",
+    "get_simple_image_filepaths",
     # metrics
     "get_batch_accuracy",
     "get_loss_function",

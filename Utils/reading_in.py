@@ -37,14 +37,37 @@ def read_in_images_simple(directory):
         img_path = os.path.join(directory, img)
         print(f"Reading in {img}")
         image = cv2.imread(img_path)  # keep as bgr
-        # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         # Resize
         image_rs = cv2.resize(image, (256, 256))
         list_of_images.append(image_rs)
 
     return list_of_images
 
+def get_simple_image_filepaths(directory):
+    list_of_image_fpaths = []
+    filepaths = get_filepaths(directory)
+    filepaths.sort(key=str.lower)
+    for img in filepaths:
+        img_path = os.path.join(directory, img)
+        list_of_image_fpaths.append(img_path)
+
+    return list_of_image_fpaths
+
+def get_simple_search_filepaths(directory, search_term):
+    list_of_image_fpaths = []
+    filepaths = get_filepaths_search(dir_name=directory, search_term=search_term)
+    filepaths.sort(key=str.lower)
+    for img in filepaths:
+        img_path = os.path.join(directory, img)
+        list_of_image_fpaths.append(img_path)
+
+    return list_of_image_fpaths
+
 def get_filepaths(dir_name):
     fpaths = [f for f in os.listdir(dir_name)]
+    return fpaths
+
+def get_filepaths_search(dir_name, search_term):
+    fpaths = [f for f in os.listdir(dir_name) if search_term in f]
     return fpaths
 
