@@ -6,3 +6,5 @@ python==3.11.13
 torch
 segment_anything
 scikit-learn
+torchmetrics
+torcheval

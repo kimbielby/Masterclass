@@ -5,7 +5,6 @@ import numpy as np
 import os
 import pandas as pd
 from pathlib import Path
-from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 from sklearn.utils import shuffle
 from skimage import util
 import torch
