@@ -3,3 +3,4 @@
 /data/images/
 /dataset_creation/segmentation_models/MediaPipe/deeplab_v3.tflite
 /models/checkpoints/spill_model_1.pth
+/models/checkpoints/spill_model_5ch.pth
