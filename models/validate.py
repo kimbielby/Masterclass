@@ -6,6 +6,12 @@ valid_psnr = []
 valid_ssim = []
 
 def validate(model, valid_loader, device):
+    """
+    Standard Validation function. Prints average Loss, PSNR, and SSIM
+    :param model: UNet model
+    :param valid_loader: Dataloader for validation
+    :param device: GPU or CPU
+    """
     total_loss = 0.0
     total_psnr = 0.0
     total_ssim = 0.0
@@ -31,7 +37,6 @@ def validate(model, valid_loader, device):
     valid_loss.append(average_loss)
     valid_psnr.append(average_psnr)
     valid_ssim.append(average_ssim)
-
 
     print(f"Valid Loss: {average_loss:.3f}      Valid PSNR: {average_psnr:.3f}      Valid SSIM: {average_ssim:.3f}")
 

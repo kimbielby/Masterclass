@@ -47,6 +47,12 @@ def move_files(base_dir, sub_dir_list, dest_dir):
             os.rmdir(src_path)
 
 def rename_files_in_folder(folder, new_name_s, new_name_e):
+    """
+    Renames all files in a given directory
+    :param folder: When the files live
+    :param new_name_s: Start of the new name
+    :param new_name_e: End of the new name
+    """
     # Get all files in the folder
     files = [f for f in os.listdir(folder)]
 
@@ -65,7 +71,7 @@ def rename_files_in_folder(folder, new_name_s, new_name_e):
 
 def rename_frames(folder, new_fname):
     """
-
+    Renames the frames (images) in the given folder
     :param folder: The gt or spill folder where the frames to be renamed live
     :param new_fname: The new base filename, e.g. gt_kim_walking2
     """

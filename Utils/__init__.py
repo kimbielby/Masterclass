@@ -23,6 +23,7 @@ __all__ = [
     "get_optimiser",
     "get_batch_psnr",
     "get_batch_ssim",
+    "check_residual_spill",
     # visuals
     "plot_results",
     "show_mask",

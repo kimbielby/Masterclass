@@ -2,6 +2,11 @@ import cv2
 import numpy as np
 
 def add_channels(bgr_img):
+    """
+    Adds extra channels to the image (hue and greenness)
+    :param bgr_img: BGR image
+    :return: Image ready to be turned into a PyTorch tensor
+    """
     bgr = bgr_img.astype(np.float32) / 255.0
     # Split BGR channels
     b, g, r = cv2.split(bgr)

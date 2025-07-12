@@ -6,6 +6,13 @@ train_psnr = []
 train_ssim = []
 
 def train(model, train_loader, device, lr=1e-4):
+    """
+    Standard Train function. Prints average Loss, PSNR, and SSIM
+    :param model: UNet model
+    :param train_loader: Dataloader with training data
+    :param device: GPU or CPU
+    :param lr: Learning rate
+    """
     total_loss = 0.0
     total_psnr = 0.0
     total_ssim = 0.0
@@ -40,10 +47,6 @@ def train(model, train_loader, device, lr=1e-4):
     train_ssim.append(average_ssim)
 
     print(f"Train Loss: {average_loss:.3f}      Train PSNR: {average_psnr:.3f}         Train SSIM: {average_ssim:.3f}")
-
-    # Check GPU memory after each epoch
-    print(f"Allocated: {torch.cuda.memory_allocated() / 1024 ** 2:.2f} MB")
-    print(f"Reserved:  {torch.cuda.memory_reserved() / 1024 ** 2:.2f} MB")
 
 
 """ Getters for Lists """

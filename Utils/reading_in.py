@@ -2,6 +2,11 @@ import cv2
 import os
 
 def read_in_all_images(top_dir):
+    """
+    Reads in all images in all the subdirectories of a given directory
+    :param top_dir: The directory where the subdirectories and images are located
+    :return: List of images
+    """
     list_of_images = []
 
     # Get list of folder names under 'dset'
@@ -30,6 +35,11 @@ def read_in_all_images(top_dir):
     return list_of_images
 
 def read_in_images_simple(directory):
+    """
+    Reads in all images that live in one directory
+    :param directory: Where the images live
+    :return: List of images
+    """
     list_of_images = []
     image_files = get_filepaths(directory)
     image_files.sort(key=str.lower)
@@ -44,6 +54,11 @@ def read_in_images_simple(directory):
     return list_of_images
 
 def get_simple_image_filepaths(directory):
+    """
+    Gets the filepaths of all files that live in a given directory
+    :param directory: Where the files live
+    :return: A List of filepaths (Strings)
+    """
     list_of_image_fpaths = []
     filepaths = get_filepaths(directory)
     filepaths.sort(key=str.lower)
@@ -54,6 +69,12 @@ def get_simple_image_filepaths(directory):
     return list_of_image_fpaths
 
 def get_simple_search_filepaths(directory, search_term):
+    """
+    Gets a list of filepaths within a given directory that contain the provided search term
+    :param directory: Where the files live
+    :param search_term: What should be part of the file name
+    :return: List of filepaths (Strings)
+    """
     list_of_image_fpaths = []
     filepaths = get_filepaths_search(dir_name=directory, search_term=search_term)
     filepaths.sort(key=str.lower)
@@ -64,10 +85,19 @@ def get_simple_search_filepaths(directory, search_term):
     return list_of_image_fpaths
 
 def get_filepaths(dir_name):
+    """
+    :param dir_name: Where the files live
+    :return: A List of file names (Strings)
+    """
     fpaths = [f for f in os.listdir(dir_name)]
     return fpaths
 
 def get_filepaths_search(dir_name, search_term):
+    """
+    :param dir_name: Where the files live
+    :param search_term: What should be part of the file name
+    :return: A List of file names that contain the provided search term
+    """
     fpaths = [f for f in os.listdir(dir_name) if search_term in f]
     return fpaths
 

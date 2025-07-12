@@ -10,9 +10,6 @@ def plot_results():
     valid_psnr_list = validate.get_val_psnr_list()
     valid_ssim_list = validate.get_val_ssim_list()
 
-    # Turn SSIM tensor into a matplotlib compatible tensor
-    train_ssim_list_d = [ss.detach().numpy() for ss in train_ssim_list]
-    valid_ssim_list_d = [ss.detach().numpy() for ss in valid_ssim_list]
 
     # PSNR
     plt.figure(figsize=(5,2))
@@ -21,19 +18,20 @@ def plot_results():
     plt.xlabel('Epoch')
     plt.title('PSNR')
     plt.legend()
+    plt.savefig("psnr_plot.png", bbox_inches='tight')
     plt.show()
     # SSIM
     plt.figure(figsize=(5,2))
-    plt.plot(train_ssim_list_d, label='Train')
+    plt.plot(train_ssim_list, label='Train')
     plt.plot(valid_ssim_list, label='Valid')
     plt.xlabel('Epoch')
     plt.title('SSIM')
     plt.legend()
+    plt.savefig("ssim_plot.png", bbox_inches='tight')
     plt.show()
 
 
-
-""" Preprocessing """
+""" For Segment Anything """
 
 def show_mask(mask, ax, random_color=False):
     if random_color:

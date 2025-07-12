@@ -68,6 +68,13 @@ class UNet(nn.Module):
         return self.final_conv(decoder1)
 
 def get_model(device, in_channels, out_channels):
+    """
+    Retrieves UNet model
+    :param device: GPU or CPU
+    :param in_channels: 3 or 5
+    :param out_channels: 3
+    :return: Model
+    """
     model = UNet(in_channels=in_channels, out_channels=out_channels)  # 3, 3
 
     return model.to(device)
