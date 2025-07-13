@@ -25,33 +25,35 @@ def test(test_loader, model, device, checkpoint_path):
 
     loss_function = get_loss_function()
     num_batches = len(test_loader)
+    num_images = len(test_loader.dataset)
 
     with torch.no_grad():
-        for idx, (inputs, gt) in enumerate(test_loader):
+        for inputs, gt in test_loader:
             inputs, gt = inputs.to(device), gt.to(device)
-            output = model(inputs)
+            output = model(inputs).clamp(min=0, max=1)
 
             # Metrics: Loss, PSNR, SSIM
             total_loss += loss_function(output, gt).item()
             total_psnr += get_batch_psnr(output, gt)
             total_ssim += get_batch_ssim(output, gt, device=device)
 
-            # Convert output to bgr image
-            output_np = output.squeeze().cpu().permute(1, 2, 0).numpy()
-            output_np = (output_np * 255).astype(np.uint8)
-            output_bgr = cv2.cvtColor(output_np, cv2.COLOR_RGB2BGR)
+            for i in range(output.shape[0]):
+                # Convert output to bgr image
+                img_np = output[i].cpu().permute(1, 2, 0).numpy()
+                img_np = (img_np * 255).astype(np.uint8)
+                output_bgr = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
 
-            # Metrics: Spill percent, Greenness
-            spill_percent, avg_greenness = check_residual_spill(img_bgr=output_bgr)
-            total_spill_percent += spill_percent
-            total_avg_greenness += avg_greenness
+                # Metrics: Spill percent, Greenness
+                spill_percent, avg_greenness = check_residual_spill(img_bgr=output_bgr)
+                total_spill_percent += spill_percent
+                total_avg_greenness += avg_greenness
 
     # Averages
     average_loss = total_loss / num_batches
     average_psnr = total_psnr / num_batches
     average_ssim = total_ssim / num_batches
-    average_spill_percent = total_spill_percent / num_batches
-    average_avg_greenness = total_avg_greenness / num_batches
+    average_spill_percent = total_spill_percent / num_images
+    average_avg_greenness = total_avg_greenness / num_images
 
     test_loss.append(average_loss)
     test_psnr.append(average_psnr)
