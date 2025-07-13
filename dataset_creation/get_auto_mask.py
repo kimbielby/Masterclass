@@ -1,5 +1,6 @@
 from Utils import get_filepaths
 from imports import *
+from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 
 def get_auto_mask(top_dir, checkpoint, model_type):
     # Get full filepaths for each png frame in top_dir
@@ -21,7 +22,7 @@ def get_auto_mask(top_dir, checkpoint, model_type):
         base_folder = "../data/outputs"
         base, _ = os.path.splitext(os.path.basename(img_path))
         mask_output_path = f"masks/{base}_Mask_"
-        cutout_output_path = f"cutouts/{base}_Cutout_"
+        # cutout_output_path = f"cutouts/{base}_Cutout_"
 
         # Get masks and sort by mask size
         masks = mask_generator.generate(img)
@@ -39,7 +40,7 @@ def get_auto_mask(top_dir, checkpoint, model_type):
 
                 # Get filenames sorted
                 base_name = f"{mask_output_path}{i}.png"
-                cutout_name = f"{cutout_output_path}{i}.png"
+                # cutout_name = f"{cutout_output_path}{i}.png"
 
                 # Save mask
                 cv2.imwrite((os.path.join(base_folder, folder, base_name)), mask)
