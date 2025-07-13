@@ -10,9 +10,8 @@ def plot_results():
     valid_psnr_list = validate.get_val_psnr_list()
     valid_ssim_list = validate.get_val_ssim_list()
 
-
     # PSNR
-    plt.figure(figsize=(5,2))
+    plt.figure(figsize=(5, 2))
     plt.plot(train_psnr_list, label='Train')
     plt.plot(valid_psnr_list, label='Valid')
     plt.xlabel('Epoch')
@@ -21,7 +20,7 @@ def plot_results():
     plt.savefig("psnr_plot.png", bbox_inches='tight')
     plt.show()
     # SSIM
-    plt.figure(figsize=(5,2))
+    plt.figure(figsize=(5, 2))
     plt.plot(train_ssim_list, label='Train')
     plt.plot(valid_ssim_list, label='Valid')
     plt.xlabel('Epoch')
